@@ -1,7 +1,3 @@
-var Path = nodeRequire('path');
-var fs = nodeRequire('fs');
-var trash = nodeRequire('trash');
-
 var File = require('./../files');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -101,25 +97,29 @@ var popupMenu = function(file, e) {
   menu.append(new gui.MenuItem({
     label: "New file",
     click: function() {
-      self.$root.newFile(file.type=='folder' ? file.path : Path.dirname(file.path));
+      // TO DO
+      // self.$root.newFile(file.type=='folder' ? file.path : Path.dirname(file.path));
     }
   }));
   menu.append(new gui.MenuItem({
     label: "New folder",
     click: function() {
-      self.$root.newFolder(file.type=='folder' ? file.path : Path.dirname(file.path));
+      // TO DO
+      // self.$root.newFolder(file.type=='folder' ? file.path : Path.dirname(file.path));
     }
   }));
   menu.append(new gui.MenuItem({
     label: "Rename",
     click: function() {
-      self.$root.renameFile(file.path);
+      // TO DO
+      // self.$root.renameFile(file.path);
     }
   }));
   menu.append(new gui.MenuItem({
     label: "Delete",
     click: function() {
-      trash([file.path], function(err) {});
+      // TO DO
+      // trash([file.path], function(err) {});
     }
   }));
   menu.popup(e.clientX, e.clientY);

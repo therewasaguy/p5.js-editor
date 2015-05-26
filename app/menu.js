@@ -1,4 +1,3 @@
-var Path = nodeRequire('path');
 var $ = require('jquery');
 var _ = require('underscore');
 var menubar = new gui.Menu({ type: 'menubar' });
@@ -62,22 +61,24 @@ module.exports.setup = function(app) {
 };
 
 module.exports.updateRecentFiles = function(app, path) {
-  var recentFiles = JSON.parse(localStorage.recentFiles || '[]');
+  // TO DO
 
-  if (typeof path !== 'undefined' && !app.temp) {
-    recentFiles.unshift(path);
-  }
+  // var recentFiles = JSON.parse(localStorage.recentFiles || '[]');
 
-  recentFiles = _.unique(recentFiles);
+  // if (typeof path !== 'undefined' && !app.temp) {
+  //   recentFiles.unshift(path);
+  // }
 
-  if (recentFiles.length > 10) recentFiles.pop();
+  // recentFiles = _.unique(recentFiles);
 
-  localStorage.recentFiles = JSON.stringify(recentFiles);
+  // if (recentFiles.length > 10) recentFiles.pop();
 
-  recentFiles.forEach(function(p) {
-    var m = new gui.MenuItem({ label: Path.basename(p), click: function() {
-      app.openProject(p);
-    }})
-    recentFilesMenu.append(m);
-  });
+  // localStorage.recentFiles = JSON.stringify(recentFiles);
+
+  // recentFiles.forEach(function(p) {
+  //   var m = new gui.MenuItem({ label: Path.basename(p), click: function() {
+  //     app.openProject(p);
+  //   }})
+  //   recentFilesMenu.append(m);
+  // });
 };

@@ -1,8 +1,8 @@
 // node modules
-var Path = nodeRequire('path');
-var fs = nodeRequire('fs');
-var os = nodeRequire('os');
-var chokidar = nodeRequire('chokidar');
+// var Path = nodeRequire('path');
+// var fs = nodeRequire('fs');
+// var os = nodeRequire('os');
+// var chokidar = nodeRequire('chokidar');
 
 // front-end modules
 var Vue = require('vue');
@@ -34,7 +34,7 @@ var appConfig = {
 
   data: {
     title: 'Untitled',
-    projectPath: window.PATH,
+    // projectPath: window.PATH,
     unsaved: window.UNSAVED ? true : false,
     windowURL: window.location.href,
     temp: true,
@@ -46,7 +46,9 @@ var appConfig = {
 
   computed: {
     projectName: function() {
-      return Path.basename(this.projectPath);
+      // TO DO
+      return 'ThisProjectPath';
+      // return Path.basename(this.projectPath);
     }
   },
 
@@ -61,26 +63,27 @@ var appConfig = {
     this.setupDragListener();
     this.setupSettings();
 
+    // TO DO: make it possible to define projectPath
     if (this.projectPath) {
-      if (!this.unsaved) this.temp = false;
-      var filename = null;
+      // if (!this.unsaved) this.temp = false;
+      // var filename = null;
 
-      if (fs.lstatSync(this.projectPath).isFile()) {
-        // keep the name of the file to be opened
-        filename = this.projectPath;
+      // if (fs.lstatSync(this.projectPath).isFile()) {
+      //   // keep the name of the file to be opened
+      //   filename = this.projectPath;
 
-        // set the projectPath to the enclosing folder
-        this.projectPath = Path.dirname(this.projectPath);
-      }
+      //   // set the projectPath to the enclosing folder
+      //   this.projectPath = Path.dirname(this.projectPath);
+      // }
 
-      // load the project and open the selected file
-      var self = this;
-      this.loadProject(this.projectPath, function(){
-        if (filename) self.openFile(filename);
-        gui.Window.get().show();
-      });
+      // // load the project and open the selected file
+      // var self = this;
+      // this.loadProject(this.projectPath, function(){
+      //   if (filename) self.openFile(filename);
+      //   gui.Window.get().show();
+      // });
 
-      menu.updateRecentFiles(this, this.projectPath);
+      // menu.updateRecentFiles(this, this.projectPath);
     } else {
       // if we don't have a project path global, create a new project
       this.modeFunction('newProject');
@@ -122,30 +125,32 @@ var appConfig = {
 
     setupCloseHandler: function() {
       var self = this;
-      var win = gui.Window.get();
-      win.on('close', function(closeEvent){
-        // check to see if there are unsaved files
-        var shouldClose = true;
-        if (_.any(self.files, function(f) {return f.contents != f.originalContents})) {
-          shouldClose = confirm('You have unsaved files. Quit and lose changes?');
-        }
-        if (shouldClose) {
-          // clean up output window
-          if (self.outputWindow) {
-            self.outputWindow.close(true);
-            self.outputWindow = null;
-          }
 
-          // save window state if the user quit the program
-          if (closeEvent === 'quit') {
-            windowstate.save(self, win);
-          }
+      // TO DO
+      // var win = gui.Window.get();
+      // win.on('close', function(closeEvent){
+      //   // check to see if there are unsaved files
+      //   var shouldClose = true;
+      //   if (_.any(self.files, function(f) {return f.contents != f.originalContents})) {
+      //     shouldClose = confirm('You have unsaved files. Quit and lose changes?');
+      //   }
+      //   if (shouldClose) {
+      //     // clean up output window
+      //     if (self.outputWindow) {
+      //       self.outputWindow.close(true);
+      //       self.outputWindow = null;
+      //     }
 
-          // close this window
-          this.close(true);
-          win = null;
-        }
-      });
+      //     // save window state if the user quit the program
+      //     if (closeEvent === 'quit') {
+      //       windowstate.save(self, win);
+      //     }
+
+      //     // close this window
+      //     this.close(true);
+      //     win = null;
+      //   }
+      // });
     },
 
     // todo: setup drag and drop
@@ -164,17 +169,19 @@ var appConfig = {
 
     // create a new window 50px below current window
     newWindow: function(url, options) {
-      var currentWindow = gui.Window.get();
-      var win = gui.Window.open(url, _.extend({
-        x: currentWindow.x + 50,
-        y: currentWindow.y + 50,
-        width: 1024,
-        height: 768,
-        toolbar: false,
-        focus: true,
-        show: false
-      }, options));
-      return win;
+      // TO DO
+
+      // var currentWindow = gui.Window.get();
+      // var win = gui.Window.open(url, _.extend({
+      //   x: currentWindow.x + 50,
+      //   y: currentWindow.y + 50,
+      //   width: 1024,
+      //   height: 768,
+      //   toolbar: false,
+      //   focus: true,
+      //   show: false
+      // }, options));
+      // return win;
     },
 
     // open an existing project with a new window
@@ -211,26 +218,28 @@ var appConfig = {
     watch: function(path) {
       var self = this;
 
-      // don't watch recursively
-      var watcher = chokidar.watch(path, {
-        ignoreInitial: true,
-        ignored: function(filepath) {
-          var regex = new RegExp(path + '\/.*\/.+');
-          return regex.test(filepath);
-        }
-      });
+      // TO DO
 
-      watcher.on('add', function(path) {
-        var f = Files.setup(path);
-        Files.addToTree(f, self.files, self.projectPath);
-      }).on('addDir', function(path) {
-        var f = Files.setup(path, {type: 'folder', children: []});
-        Files.addToTree(f, self.files, self.projectPath);
-      }).on('unlink', function(path) {
-        Files.removeFromTree(path, self.files);
-      }).on('unlinkDir', function(path) {
-        Files.removeFromTree(path, self.files);
-      })
+      // don't watch recursively
+      // var watcher = chokidar.watch(path, {
+      //   ignoreInitial: true,
+      //   ignored: function(filepath) {
+      //     var regex = new RegExp(path + '\/.*\/.+');
+      //     return regex.test(filepath);
+      //   }
+      // });
+
+      // watcher.on('add', function(path) {
+      //   var f = Files.setup(path);
+      //   Files.addToTree(f, self.files, self.projectPath);
+      // }).on('addDir', function(path) {
+      //   var f = Files.setup(path, {type: 'folder', children: []});
+      //   Files.addToTree(f, self.files, self.projectPath);
+      // }).on('unlink', function(path) {
+      //   Files.removeFromTree(path, self.files);
+      // }).on('unlinkDir', function(path) {
+      //   Files.removeFromTree(path, self.files);
+      // })
     },
 
     // close the window, checking for unsaved file changes
@@ -243,37 +252,41 @@ var appConfig = {
 
     // save all open files
     saveAll: function() {
-      _.where(this.files, {type: 'file', open: true}).forEach(function(file) {
-        if (file.originalContents != file.contents) {
-          fs.writeFileSync(file.path, file.contents, "utf8");
-          file.originalContents = file.contents;
-        }
-      });
+      // TO DO
+
+      // _.where(this.files, {type: 'file', open: true}).forEach(function(file) {
+      //   if (file.originalContents != file.contents) {
+      //     fs.writeFileSync(file.path, file.contents, "utf8");
+      //     file.originalContents = file.contents;
+      //   }
+      // });
     },
 
     saveAs: function(event) {
-      // capture the filename selected by the user
-      var file = event.target.files[0].path;
+      // TO DO
 
-      if (this.temp) {
-        // mode specific action
-        this.modeFunction('saveAs', file);
-      } else {
-        // save a file
-        // if the we are saving inside the project path just open the new file
-        // otherwise open a new window
-        fs.writeFileSync(file, this.currentFile.contents, "utf8");
-        if ((Path.dirname(file) + '/').indexOf(this.projectPath + '/') > -1) {
-          var f = Files.setup(file);
-          Files.addToTree(f, this.files, this.projectPath);
-          this.openFile(file);
-        } else {
-          this.openProject(file);
-        }
-      }
+      // // capture the filename selected by the user
+      // var file = event.target.files[0].path;
 
-      // reset value in case the user wants to save the same filename more than once
-      $('#saveFile').val('');
+      // if (this.temp) {
+      //   // mode specific action
+      //   this.modeFunction('saveAs', file);
+      // } else {
+      //   // save a file
+      //   // if the we are saving inside the project path just open the new file
+      //   // otherwise open a new window
+      //   fs.writeFileSync(file, this.currentFile.contents, "utf8");
+      //   if ((Path.dirname(file) + '/').indexOf(this.projectPath + '/') > -1) {
+      //     var f = Files.setup(file);
+      //     Files.addToTree(f, this.files, this.projectPath);
+      //     this.openFile(file);
+      //   } else {
+      //     this.openProject(file);
+      //   }
+      // }
+
+      // // reset value in case the user wants to save the same filename more than once
+      // $('#saveFile').val('');
     },
 
     saveProjectAs: function(event) {
@@ -292,73 +305,84 @@ var appConfig = {
     },
 
     writeFile: function() {
-      fs.writeFileSync(this.currentFile.path, this.currentFile.contents, "utf8");
-      this.currentFile.originalContents = this.currentFile.contents;
+      // TO DO
+
+      // fs.writeFileSync(this.currentFile.path, this.currentFile.contents, "utf8");
+      // this.currentFile.originalContents = this.currentFile.contents;
     },
 
     // open up a file - read its contents if it's not already opened
     openFile: function(path, callback) {
-      var self = this;
+      // TO DO
 
-      var file = Files.find(this.files, path);
-      if (!file) return false;
+      // var self = this;
 
-      if (file.open) {
-        this.title = file.name;
-        this.currentFile = file;
-        this.$broadcast('open-file', this.currentFile);
-      } else {
-        fs.readFile(path, 'utf8', function(err, fileContents) {
-          if (err) throw err;
-          file.contents = file.originalContents = fileContents;
-          file.open = true;
-          self.title = file.name;
-          self.currentFile = file;
-          self.$broadcast('open-file', self.currentFile);
-          if (typeof callback === 'function') callback(file);
-        });
-      }
+      // var file = Files.find(this.files, path);
+      // if (!file) return false;
+
+      // if (file.open) {
+      //   this.title = file.name;
+      //   this.currentFile = file;
+      //   this.$broadcast('open-file', this.currentFile);
+      // } else {
+      //   fs.readFile(path, 'utf8', function(err, fileContents) {
+      //     if (err) throw err;
+      //     file.contents = file.originalContents = fileContents;
+      //     file.open = true;
+      //     self.title = file.name;
+      //     self.currentFile = file;
+      //     self.$broadcast('open-file', self.currentFile);
+      //     if (typeof callback === 'function') callback(file);
+      //   });
+      // }
     },
 
     // create a new file and save it in the project path
     newFile: function(basepath) {
       var title = prompt('File name:');
-      if (!title) return false;
 
-      if (typeof basepath === 'undefined') {
-        basepath = this.projectPath;
-      }
+      // TO DO
 
-      var filename = Path.join(basepath, title);
+      // if (!title) return false;
 
-      var self = this;
-      fs.writeFile(filename, '', 'utf8', function(err){
-        var f = Files.setup(filename);
-        Files.addToTree(f, self.files, self.projectPath);
-        self.openFile(filename);
-      });
+      // if (typeof basepath === 'undefined') {
+      //   basepath = this.projectPath;
+      // }
+
+      // var filename = Path.join(basepath, title);
+
+      // var self = this;
+      // fs.writeFile(filename, '', 'utf8', function(err){
+      //   var f = Files.setup(filename);
+      //   Files.addToTree(f, self.files, self.projectPath);
+      //   self.openFile(filename);
+      // });
     },
 
     newFolder: function(basepath) {
       var title = prompt('Folder name:');
-      if (!title) return false;
+      // TO DO
 
-      if (typeof basepath === 'undefined') {
-        basepath = this.projectPath;
-      }
+      // if (!title) return false;
 
-      var filename = Path.join(basepath, title);
+      // if (typeof basepath === 'undefined') {
+      //   basepath = this.projectPath;
+      // }
 
-      var self = this;
-      fs.mkdir(filename);
+      // var filename = Path.join(basepath, title);
+
+      // var self = this;
+      // fs.mkdir(filename);
     },
 
     renameFile: function(path) {
-      var originalName = Path.basename(path);
-      var newName = prompt('Rename ' + originalName + ' to:', originalName);
-      if (!newName) return false;
+      // TO DO
 
-      fs.rename(path, Path.join(Path.dirname(path), newName));
+      // var originalName = Path.basename(path);
+      // var newName = prompt('Rename ' + originalName + ' to:', originalName);
+      // if (!newName) return false;
+
+      // fs.rename(path, Path.join(Path.dirname(path), newName));
     },
 
     debugOut: function(msg, line, type) {
@@ -389,7 +413,8 @@ var appConfig = {
     },
 
     showHelp: function() {
-      gui.Shell.openExternal(this.$options.mode.referenceURL);
+      // TO DO
+      // gui.Shell.openExternal(this.$options.mode.referenceURL);
     }
 
   }
@@ -401,6 +426,7 @@ windowstate.load(function(createNewProject){
   if (createNewProject) {
     var app = new Vue(appConfig);
   } else {
-    gui.Window.get().close(true);
+    // TO DO
+    // gui.Window.get().close(true);
   }
 });

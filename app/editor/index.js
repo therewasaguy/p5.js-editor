@@ -1,5 +1,3 @@
-var Path = nodeRequire('path');
-
 var _ = require('underscore');
 var Files = require('../files');
 var beautify = require('js-beautify').js_beautify;
@@ -80,9 +78,7 @@ module.exports = {
     },
 
     saveProjectAs: function(path) {
-      this.sessions.forEach(function(session) {
-        session.path = Path.join(path, Path.basename(session.path));
-      });
+      // TO DO
     },
 
     reformat: function() {

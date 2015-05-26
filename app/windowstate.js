@@ -1,4 +1,4 @@
-var fs = nodeRequire('fs');
+// var fs = nodeRequire('fs');
 
 module.exports.load = function(callback) {
   var windows = localStorage.windows ? JSON.parse(localStorage.windows) : [];
@@ -7,26 +7,27 @@ module.exports.load = function(callback) {
   if (windows.length > 0) {
     var openedWindows = 0;
     windows.forEach(function(w){
-      if (w.path && fs.existsSync(w.path)) {
-        var win = gui.Window.open('index.html',{
-          x: w.x,
-          y: w.y,
-          width: w.width,
-          height: w.height,
-          toolbar: false,
-          focus: true,
-          show: false
-        });
-        win.on('document-start', function(){
-          win.window.PATH = w.path;
-          win.window.UNSAVED = w.temp
-          openedWindows ++;
+      // TO DO
+      // if (w.path && fs.existsSync(w.path)) {
+      //   var win = gui.Window.open('index.html',{
+      //     x: w.x,
+      //     y: w.y,
+      //     width: w.width,
+      //     height: w.height,
+      //     toolbar: false,
+      //     focus: true,
+      //     show: false
+      //   });
+      //   win.on('document-start', function(){
+      //     win.window.PATH = w.path;
+      //     win.window.UNSAVED = w.temp
+      //     openedWindows ++;
 
-          if (openedWindows === windows.length) {
-            callback(false);
-          }
-        });
-      }
+      //     if (openedWindows === windows.length) {
+      //       callback(false);
+      //     }
+      //   });
+      // }
     });
   } else {
     callback(true);

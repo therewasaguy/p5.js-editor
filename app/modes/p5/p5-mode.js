@@ -1,28 +1,7 @@
-var wrench = nodeRequire('wrench');
-var Path = nodeRequire('path');
-var os = nodeRequire('os');
-var fs = nodeRequire('fs');
-
 module.exports = {
+
   newProject: function() {
-    //copy the empty project folder to a temporary directory
-    var emptyProject = 'mode_assets/p5/empty_project';
-    var tempProject = Path.join(os.tmpdir(), 'p5' + Date.now(), 'Untitled');
-    wrench.mkdirSyncRecursive(tempProject);
-    wrench.copyDirSyncRecursive(emptyProject, tempProject, {
-      excludeHiddenUnix: true,
-      inflateSymlinks: true,
-      forceDelete: true
-    });
-
-    this.projectPath = tempProject;
-
-    //open the project and file
-    var self = this;
-    this.loadProject(tempProject, function(){
-      self.openFile(Path.join(tempProject, 'sketch.js'));
-      gui.Window.get().show();
-    });
+    // TO DO
   },
 
   exportProject: function() {
@@ -30,59 +9,11 @@ module.exports = {
   },
 
   saveAs: function(path) {
-    //save all files
-    this.saveAll();
-
-    //copy the folder
-    wrench.copyDirSyncRecursive(this.projectPath, path);
-
-    //change file paths
-    this.files.forEach(function(file) {
-      file.path = Path.join(path, file.name);
-    });
-
-    this.$broadcast('save-project-as', path);
-
-    this.projectPath = path;
-    //this.$broadcast('open-project', path);
-    this.temp = false;
-
-    this.watch(path);
+    // TO DO
   },
 
   run: function() {
-    var self = this;
-    this.saveAll();
-
-    if (this.outputWindow) {
-      if (this.settings.runInBrowser) {
-        gui.Shell.openExternal(url);
-      } else {
-        this.outputWindow.reloadIgnoringCache();
-        this.outputWindow.show();
-        this.outputWindow.focus();
-      }
-    } else {
-      gui.App.clearCache();
-      startServer(this.projectPath, this, function(url) {
-        if (self.settings.runInBrowser) {
-          gui.Shell.openExternal(url);
-        } else {
-          self.outputWindow = self.newWindow(url, {toolbar: true, 'inject-js-start': 'js/debug-console.js'});
-          self.outputWindow.on('document-start', function(){
-            self.outputWindow.show();
-          });
-          //self.outputWindow.focus();
-          self.outputWindow.on("close", function(){
-            self.running = false;
-            self.outputWindow = null;
-            this.close(true);
-          });
-        }
-        this.running = true;
-
-      });
-    }
+    // TO DO
   },
 
   stop: function() {
@@ -192,10 +123,12 @@ function download(url, local, cb) {
 }
 
 function getLine(filename, lineNo, callback) {
-  fs.readFile(filename, function (err, data) {
-    if (err) throw err;
+  // TO DO
 
-    var lines = data.toString('utf-8').split("\n");
-    callback(lines[lineNo]);
-  });
+  // fs.readFile(filename, function (err, data) {
+  //   if (err) throw err;
+
+  //   var lines = data.toString('utf-8').split("\n");
+  //   callback(lines[lineNo]);
+  // });
 }
