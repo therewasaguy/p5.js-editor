@@ -47,7 +47,7 @@ var appConfig = {
   computed: {
     projectName: function() {
       // TO DO
-      return 'ThisProjectPath';
+      return 'Hello p5!';
       // return Path.basename(this.projectPath);
     }
   },

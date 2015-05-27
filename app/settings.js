@@ -10,9 +10,11 @@ var defaults = {
 };
 
 module.exports.load = function() {
-  if (typeof nodeGlobal.userSettings === 'object') {
-    return nodeGlobal.userSettings;
-  }
+  // TO DO
+
+  // if (typeof nodeGlobal.userSettings === 'object') {
+  //   return nodeGlobal.userSettings;
+  // }
 
   var settings = localStorage.userSettings;
   if (!settings) {
@@ -25,13 +27,13 @@ module.exports.load = function() {
     }
   }
 
-  nodeGlobal.userSettings = settings;
+  // nodeGlobal.userSettings = settings;
 
   return settings;
 };
 
 module.exports.save = function(settings) {
-  nodeGlobal.userSettings = settings;
+  // nodeGlobal.userSettings = settings;
   localStorage.userSettings = JSON.stringify(nodeGlobal.userSettings);
 };
 
