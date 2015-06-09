@@ -53,7 +53,9 @@ var Files = {
   },
 
   contains: function(files, fileObject) {
-    if (_.findWhere(files, {path: fileObject.path})) {
+    if (_.findWhere(files, {
+        path: fileObject.path
+      })) {
       return true;
     } else {
       return false;
@@ -84,7 +86,13 @@ var Files = {
 
   list: function(dir, callback) {
     // TO DO
+  },
 
+  cleanExampleName: function(examplePath) {
+    examplePath = Path.basename(examplePath);
+    examplePath = examplePath.replace(/([0-9]+_)|(\.js)/g,'');
+    examplePath = examplePath.replace(/_/g,' ');
+    return examplePath;
   },
 };
 

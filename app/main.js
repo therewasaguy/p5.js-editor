@@ -1,13 +1,16 @@
 // node modules
+
 // var Path = nodeRequire('path');
 // var fs = nodeRequire('fs');
 // var os = nodeRequire('os');
 // var chokidar = nodeRequire('chokidar');
+// var rimdir = nodeRequire('rimraf');
 
 // front-end modules
 var Vue = require('vue');
 var $ = require('jquery');
 var _ = require('underscore');
+var AutoLinker = require('autolinker');
 var keybindings = require('./keybindings');
 var Files = require('./files');
 var menu = require('./menu');
@@ -29,7 +32,8 @@ var appConfig = {
     editor: require('./editor/index'),
     sidebar: require('./sidebar/index'),
     settings: require('./settings/index'),
-    debug: require('./debug/index')
+    debug: require('./debug/index'),
+    tabs: require('./tabs/index')
   },
 
   data: {
@@ -39,9 +43,13 @@ var appConfig = {
     windowURL: window.location.href,
     temp: true,
     running: false,
+    focused: false,
     settings: {},
     showSettings: false,
-    files: []
+    files: [],
+    tabs: [],
+    justSaved: false,
+    askReload: false
   },
 
   computed: {
@@ -49,6 +57,11 @@ var appConfig = {
       // TO DO
       return 'Hello p5!';
       // return Path.basename(this.projectPath);
+    },
+
+    orientation: function(){
+     var orientation = this.settings.consoleOrientation;
+     return orientation;
     }
   },
 
@@ -76,12 +89,7 @@ var appConfig = {
       //   this.projectPath = Path.dirname(this.projectPath);
       // }
 
-      // // load the project and open the selected file
-      // var self = this;
-      // this.loadProject(this.projectPath, function(){
-      //   if (filename) self.openFile(filename);
-      //   gui.Window.get().show();
-      // });
+      // load the project and open the selected file
 
       // menu.updateRecentFiles(this, this.projectPath);
     } else {
@@ -89,8 +97,6 @@ var appConfig = {
       this.modeFunction('newProject');
       menu.updateRecentFiles(this);
     }
-
-
   },
 
   methods: {
@@ -125,32 +131,7 @@ var appConfig = {
 
     setupCloseHandler: function() {
       var self = this;
-
       // TO DO
-      // var win = gui.Window.get();
-      // win.on('close', function(closeEvent){
-      //   // check to see if there are unsaved files
-      //   var shouldClose = true;
-      //   if (_.any(self.files, function(f) {return f.contents != f.originalContents})) {
-      //     shouldClose = confirm('You have unsaved files. Quit and lose changes?');
-      //   }
-      //   if (shouldClose) {
-      //     // clean up output window
-      //     if (self.outputWindow) {
-      //       self.outputWindow.close(true);
-      //       self.outputWindow = null;
-      //     }
-
-      //     // save window state if the user quit the program
-      //     if (closeEvent === 'quit') {
-      //       windowstate.save(self, win);
-      //     }
-
-      //     // close this window
-      //     this.close(true);
-      //     win = null;
-      //   }
-      // });
     },
 
     // todo: setup drag and drop
@@ -192,15 +173,21 @@ var appConfig = {
       $('#openFile').val('');
     },
 
-    openProject: function(path) {
+    openProject: function(path, temp) {
       // create the new window
       var win = this.newWindow(this.windowURL);
 
       // set the project path of the new window
       win.on('document-start', function(){
+        if (fs.lstatSync(path).isDirectory()) {
+          var sketchPath = Path.join(path, 'sketch.js');
+          if (fs.existsSync(sketchPath)) path = sketchPath;
+        }
         win.window.PATH = path;
+        if (typeof temp === 'boolean' && temp === true) {
+          win.window.UNSAVED = true;
+        }
       });
-
       return win;
     },
 
@@ -214,39 +201,31 @@ var appConfig = {
       });
     },
 
+    resetMenu: function(){
+      menu.resetMenu();
+    },
+
     // watch the project file tree for changes
     watch: function(path) {
       var self = this;
-
       // TO DO
-
-      // don't watch recursively
-      // var watcher = chokidar.watch(path, {
-      //   ignoreInitial: true,
-      //   ignored: function(filepath) {
-      //     var regex = new RegExp(path + '\/.*\/.+');
-      //     return regex.test(filepath);
-      //   }
-      // });
-
-      // watcher.on('add', function(path) {
-      //   var f = Files.setup(path);
-      //   Files.addToTree(f, self.files, self.projectPath);
-      // }).on('addDir', function(path) {
-      //   var f = Files.setup(path, {type: 'folder', children: []});
-      //   Files.addToTree(f, self.files, self.projectPath);
-      // }).on('unlink', function(path) {
-      //   Files.removeFromTree(path, self.files);
-      // }).on('unlinkDir', function(path) {
-      //   Files.removeFromTree(path, self.files);
-      // })
     },
+
+
+
 
     // close the window, checking for unsaved file changes
     closeProject: function() {
-      if (this.outputWindow) {
-        this.outputWindow.close(true);
-        this.outputWindow = null;
+      if (this.focused) {
+        if (this.outputWindow) {
+          this.outputWindow.close(true);
+          this.outputWindow = null;
+        }
+        gui.Window.get().close();
+      } else {
+        if (this.outputWindow) {
+          this.toggleRun();
+        }
       }
     },
 
@@ -289,52 +268,47 @@ var appConfig = {
       // $('#saveFile').val('');
     },
 
-    saveProjectAs: function(event) {
-      var path = event.target.files[0].path;
-      this.modeFunction('saveAs', path);
+    saveAs: function(event) {
+      // TO DO
     },
 
+    saveProjectAs: function(event) {
+      // TO DO
+    },
+
+   
+
     saveFile: function() {
-      // if this is a new project then trigger a save-as
-      if (this.temp) {
-        $('#saveFile').trigger('click');
-      } else {
-        // otherwise just write the current file
-        this.writeFile();
-      }
+      // TO DO
+    },
+
+    saveFileAs: function(path) {
+      // TO DO
     },
 
     writeFile: function() {
       // TO DO
-
-      // fs.writeFileSync(this.currentFile.path, this.currentFile.contents, "utf8");
-      // this.currentFile.originalContents = this.currentFile.contents;
     },
 
     // open up a file - read its contents if it's not already opened
     openFile: function(path, callback) {
       // TO DO
+    },
+    
+    closeFile: function(path){
+        var shouldClose = true;
 
-      // var self = this;
+        if (file.contents != file.originalContents){
+          shouldClose = confirm('You have unsaved changes. Close file and lose changes?');
+        }
 
-      // var file = Files.find(this.files, path);
-      // if (!file) return false;
-
-      // if (file.open) {
-      //   this.title = file.name;
-      //   this.currentFile = file;
-      //   this.$broadcast('open-file', this.currentFile);
-      // } else {
-      //   fs.readFile(path, 'utf8', function(err, fileContents) {
-      //     if (err) throw err;
-      //     file.contents = file.originalContents = fileContents;
-      //     file.open = true;
-      //     self.title = file.name;
-      //     self.currentFile = file;
-      //     self.$broadcast('open-file', self.currentFile);
-      //     if (typeof callback === 'function') callback(file);
-      //   });
-      // }
+        if (shouldClose) {
+          file.open = false;
+          file.contents = file.originalContents; 
+          this.$broadcast('close-file', file);
+          return true;
+        }
+        return false;
     },
 
     // create a new file and save it in the project path
@@ -342,37 +316,11 @@ var appConfig = {
       var title = prompt('File name:');
 
       // TO DO
-
-      // if (!title) return false;
-
-      // if (typeof basepath === 'undefined') {
-      //   basepath = this.projectPath;
-      // }
-
-      // var filename = Path.join(basepath, title);
-
-      // var self = this;
-      // fs.writeFile(filename, '', 'utf8', function(err){
-      //   var f = Files.setup(filename);
-      //   Files.addToTree(f, self.files, self.projectPath);
-      //   self.openFile(filename);
-      // });
     },
 
     newFolder: function(basepath) {
       var title = prompt('Folder name:');
       // TO DO
-
-      // if (!title) return false;
-
-      // if (typeof basepath === 'undefined') {
-      //   basepath = this.projectPath;
-      // }
-
-      // var filename = Path.join(basepath, title);
-
-      // var self = this;
-      // fs.mkdir(filename);
     },
 
     renameFile: function(path) {
@@ -385,9 +333,21 @@ var appConfig = {
       // fs.rename(path, Path.join(Path.dirname(path), newName));
     },
 
-    debugOut: function(msg, line, type) {
+    debugOut: function(data) {
+      var msg = data.msg;
+      var style = data.style;
+      var line = data.num;
+      var type = data.type;
       if (typeof msg === 'object') msg = JSON.stringify(msg);
-      $('#debug').append('<pre class="'+type+'">' + (line ? line + ': ' : '') + msg + '</pre>');
+      if (msg === 'Uncaught ReferenceError: require is not defined') return false;
+      if (style) {
+        msg = msg.replace(/%c/g, '');
+        msg = msg.replace('[', '');
+        msg = msg.replace(']', '');
+      }
+      msg = AutoLinker.link(msg);
+      // console.log(data);
+      $('#debug').append('<div class="'+type+'" style="'+(style ? style : '')+'">' + (line ? line + ': ' : '') + msg + '</div>');
       $('#debug').scrollTop($('#debug')[0].scrollHeight);
     },
 
@@ -400,6 +360,7 @@ var appConfig = {
       if (this.running) {
         this.modeFunction('stop');
       } else {
+        $('#debug').html('');
         this.modeFunction('run');
       }
     },
@@ -410,6 +371,10 @@ var appConfig = {
 
     toggleSettingsPane: function() {
       this.showSettings = !this.showSettings;
+    },
+
+    toggleSidebar: function() {
+      this.settings.showSidebar = !this.settings.showSidebar;
     },
 
     showHelp: function() {

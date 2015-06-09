@@ -4,9 +4,9 @@ var beautify = require('js-beautify').js_beautify;
 var beautify_css = require('js-beautify').css;
 var beautify_html = require('js-beautify').html;
 var ace = require('brace');
-require('brace/mode/javascript');
+
 require('brace/mode/html');
-require('brace/mode/ejs');
+require('brace/mode/javascript');
 require('brace/mode/css');
 require('brace/mode/json');
 require('brace/mode/text');
@@ -14,8 +14,8 @@ require('brace/theme/tomorrow');
 require('brace/ext/searchbox');
 
 var modes = {
-  ".html": "ejs",
-  ".htm": "ejs",
+  ".html": "html",
+  ".htm": "html",
   ".js": "javascript",
   ".css": "css",
   ".json": "json",
@@ -34,6 +34,7 @@ module.exports = {
     this.sessions = [];
 
     this.$on('open-file', this.openFile);
+    this.$on('close-file', this.closeFile);
     this.$on('save-project-as', this.saveProjectAs);
     this.$on('reformat', this.reformat);
     this.$on('settings-changed', this.updateSettings);
@@ -48,7 +49,6 @@ module.exports = {
   methods: {
     openFile: function(fileObject) {
       var session = _.findWhere(this.sessions, {path: fileObject.path});
-
       if (!session) {
         var doc = ace.createEditSession(fileObject.contents, "ace/mode/" + modes[fileObject.ext]);
 
@@ -56,6 +56,8 @@ module.exports = {
         doc.on('change', function() {
           var file = Files.find(self.$root.files, fileObject.path);
           if (file) file.contents = doc.getValue();
+                    
+
         });
 
         var session = {
@@ -74,6 +76,14 @@ module.exports = {
       if (this.newProject) {
         this.ace.gotoLine(2, 2);
         this.newProject = false;
+      }
+    },
+
+    closeFile: function(fileObject){
+      var session = _.findWhere(this.sessions, {path: fileObject.path});
+      if(session){
+        var index = _.indexOf(this.sessions, session);
+        this.sessions.splice(index,1);
       }
     },
 

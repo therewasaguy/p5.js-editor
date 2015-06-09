@@ -4,7 +4,7 @@ var defaults = {
   tabType: "spaces",
   theme: 'tomorrow',
   consoleOrientation: 'horizontal',
-  showLibs: false,
+  showSidebar: false,
   wordWrap: false,
   runInBrowser: false
 };
@@ -33,12 +33,14 @@ module.exports.load = function() {
 };
 
 module.exports.save = function(settings) {
+  // TO DO
   // nodeGlobal.userSettings = settings;
-  localStorage.userSettings = JSON.stringify(nodeGlobal.userSettings);
+  // localStorage.userSettings = JSON.stringify(nodeGlobal.userSettings);
 };
 
 module.exports.write = function() {
-  localStorage.userSettings = JSON.stringify(nodeGlobal.userSettings);
+  // TO DO
+  // localStorage.userSettings = JSON.stringify(nodeGlobal.userSettings);
 };
 
 module.exports.defaults = defaults;

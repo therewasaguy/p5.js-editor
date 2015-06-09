@@ -13,8 +13,8 @@ var download = require("gulp-download");
 var Path = require('path');
 var fs = require('fs');
 var info = require('./package.json');
+var request = require('request');
 
-console.log(info.devDependencies.nw)
 var builderOptions = {
   version: info.devDependencies.nw,
   buildType: 'versioned',
@@ -60,19 +60,41 @@ gulp.task('watch', function() {
   gulp.watch(cssPath, ['css']);
 });
 
-
 function build (cb) {
   var nw = new NwBuilder(builderOptions);
 
   nw.on('log', console.log);
 
   nw.build().then(function () {
+
+    copyFfmpegBuild();
+
     cb();
   }).catch(function (error) {
     console.error(error);
   });
 
 }
+
+// copies the ffmpegsumo.so with mp3/mp4 decoders to nwjs directory for BUILD (currently only MacOS)
+// puts the correct library in the dist folder.
+function copyFfmpegBuild() {
+  console.log('copying ffmpegsumo.so to ./dist');
+  gulp.src('./lib/ffmpegsumo.so')
+    .pipe(gulp.dest('./dist/p5 - v0.1.8/osx64/p5.app/Contents/Frameworks/nwjs Framework.framework/Libraries',
+       {overwrite: true}));
+}
+
+
+// copies the ffmpegsumo.so with mp3/mp4 decoders to nwjs directory for development, assuming npm is already run
+gulp.task('copy-ffmpeg-default', function() {
+  console.log('copying ffmpegsumo.so to ./node_modules');
+  gulp.src('./lib/ffmpegsumo.so')
+    .pipe(gulp.dest('./node_modules/nw/nwjs/nwjs.app/Contents/Frameworks/nwjs Framework.framework/Libraries/',
+       {overwrite: true}));
+});
+
+
 
 
 function latest () {
@@ -88,9 +110,9 @@ function latest () {
 
 gulp.task('p5', function () {
   var urls = [
-    'https://raw.githubusercontent.com/lmccart/p5.js/master/lib/p5.js',
-    'https://raw.githubusercontent.com/lmccart/p5.js/master/lib/addons/p5.sound.js',
-    'https://raw.githubusercontent.com/lmccart/p5.js/master/lib/addons/p5.dom.js',
+    'https://raw.githubusercontent.com/processing/p5.js/master/lib/p5.js',
+    'https://raw.githubusercontent.com/processing/p5.js/master/lib/addons/p5.sound.js',
+    'https://raw.githubusercontent.com/processing/p5.js/master/lib/addons/p5.dom.js',
   ];
 
   urls.forEach(function(url) {
@@ -102,9 +124,67 @@ gulp.task('p5', function () {
 gulp.task('release', function(){
   build(function(){
     latest().pipe(release(info));
-  })
+  });
 });
 
-gulp.task('build', build);
+function saveDataForCategory(requestParams) {
+  var headers = {'User-Agent': 'p5.js-editor/0.0.1'};
+  requestParams.forEach(function(params)  {
+    // extract download URL for examples in this category
+    var options = {
+      url: params.url,
+      method: 'GET',
+      headers: headers
+    };
+    var fileMetadata = [];
+    request(options, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var json = JSON.parse(body);
+        json.forEach(function(data) {
+          var fileName = data.name;
+          var destination = "./public/mode_assets/p5/examples/".concat(params.category);
+          download(data.download_url)
+            .pipe(gulp.dest(destination));
+        });
+      }
+    });
+  });
+}
+
+gulp.task('getExamples', function(){
+  var headers = {'User-Agent': 'p5.js-editor/0.0.1'};
+  // get example source files
+  var options = {
+      url: 'https://api.github.com/repos/processing/p5.js-website/contents/examples/examples_src',
+      method: 'GET',
+      headers: headers
+  };
+  var requestParams = [];
+  request(options, function (error, response, body) {
+    var json = JSON.parse(body);
+    json.forEach(function(metadata) {
+      // extract category for filename
+      var category = metadata.name.split("_")[1];
+      requestParams.push({url: metadata.url, category: category});
+    });
+    saveDataForCategory(requestParams);
+  });
+  // get example assets
+  options.url = 'https://api.github.com/repos/processing/p5.js-website/contents/examples/examples/assets';
+  request(options, function (error, response, body) {
+    var assetsDest = "./public/mode_assets/p5/example_assets/";
+    if (!error && response.statusCode == 200) {
+      var json = JSON.parse(body);
+      json.forEach(function(data) {
+        var fileName = data.name;
+        download(data.download_url)
+          .pipe(gulp.dest(assetsDest));
+      });
+    }
+  });
+});
+
+gulp.task('build',  build);
+//gulp.task('build', ['nw-build', 'copy-ffmpeg-build']);
 gulp.task('latest', latest);
-gulp.task('default', ['css', 'browserify', 'watch']);
+gulp.task('default', ['copy-ffmpeg-default', 'css', 'browserify', 'watch']);

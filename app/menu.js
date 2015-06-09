@@ -6,81 +6,61 @@ var _ = require('underscore');
 // var help = new gui.Menu();
 // var win = gui.Window.get();
 // var recentFilesMenu = new gui.Menu();
+var Files = require('./files');
+var openRecent, examples;
 
 module.exports.setup = function(app) {
   // TO DO
-
-  // fileMenu.append(new gui.MenuItem({ label: 'New File \t\t\u2318N', click: function(){
+  // fileMenu.append(new gui.MenuItem({ label: 'New Project', modifiers: 'shift-cmd', key: 'n', click: function(){
+  //   app.newWindow(app.windowURL);
+  // }}));
+  
+  // fileMenu.append(new gui.MenuItem({ label: 'New File', modifiers: 'cmd', key: 'n', click: function(){
   //   app.newFile();
   // }}));
 
-  // fileMenu.append(new gui.MenuItem({ label: 'New Project \t\u21E7\u2318N', click: function(){
-  //   app.newWindow(app.windowURL);
+  // fileMenu.append(new gui.MenuItem({ label: 'New Folder', click: function(){
+  //   app.newFolder();
   // }}));
 
-  // fileMenu.append(new gui.MenuItem({ label: 'Open \t\t\t\u2318O', click: function(){
+  // fileMenu.append(new gui.MenuItem({ label: 'Open', modifiers: 'cmd', key: 'o', click: function(){
   //   $('#openFile').trigger('click');
   // }}));
 
-  // var openRecent = new gui.MenuItem({label: 'Open Recent'});
+  // openRecent = new gui.MenuItem({label: 'Open Recent'});
   // openRecent.submenu = recentFilesMenu;
   // fileMenu.append(openRecent);
 
-  // fileMenu.append(new gui.MenuItem({ label: 'Close \t\t\t\u2318W', click: function(){
+  // fileMenu.append(new gui.MenuItem({ label: 'Close', modifiers: 'cmd', key: 'w', click: function(){
   //   app.closeProject();
   // }}));
 
-  // fileMenu.append(new gui.MenuItem({ label: 'Save \t\t\t\u2318S', click: function(){
+  // fileMenu.append(new gui.MenuItem({ label: 'Save', modifiers: 'cmd', key: 's', click: function(){
   //   app.saveFile();
   // }}));
 
-  // fileMenu.append(new gui.MenuItem({ label: 'Save File As \t\t\u21E7\u2318S', click: function(){
-  //   $('#saveFile').trigger('click');
+  // fileMenu.append(new gui.MenuItem({ label: 'Save File As...', modifiers: 'shift-cmd', key: 's', click: function(){
+  //   app.saveFileAs(app.currentFile.path);
   // }}));
 
-  // fileMenu.append(new gui.MenuItem({ label: 'Save Project As', click: function(){
+  // fileMenu.append(new gui.MenuItem({ label: 'Save Project As...', modifiers: 'alt-shift-cmd', key: 's', click: function(){
   //   $('#saveProject').trigger('click');
+    
   // }}));
 
-  // fileMenu.append(new gui.MenuItem({ type: 'separator' }));
+  // add menu option for loading example sketches
+  // examples = new gui.MenuItem({label: 'Examples'});
+  // create submenu
+  var exampleDir = 'mode_assets/p5/examples';
 
-  // //fileMenu.append(new gui.MenuItem({ label: 'Export \t\t\t\u2318E', click: function(){
-  //   //app.export();
-  // //}}));
+  // get latest example categories
 
-  // fileMenu.append(new gui.MenuItem({ label: 'Run \t\t\t\u2318R', click: function(){
-  //   app.run();
-  // }}));
+};
 
-  // help.append(new gui.MenuItem({ label: 'Reference', click: function(){
-  //   app.showHelp();
-  // }}));
-
-  // win.menu = menubar;
-  // win.menu.insert(new gui.MenuItem({ label: 'File', submenu: fileMenu}),1);
-  // win.menu.append(new gui.MenuItem({ label: 'Help', submenu: help}));
-
+module.exports.resetMenu = function() {
+  // TO DO
 };
 
 module.exports.updateRecentFiles = function(app, path) {
   // TO DO
-
-  // var recentFiles = JSON.parse(localStorage.recentFiles || '[]');
-
-  // if (typeof path !== 'undefined' && !app.temp) {
-  //   recentFiles.unshift(path);
-  // }
-
-  // recentFiles = _.unique(recentFiles);
-
-  // if (recentFiles.length > 10) recentFiles.pop();
-
-  // localStorage.recentFiles = JSON.stringify(recentFiles);
-
-  // recentFiles.forEach(function(p) {
-  //   var m = new gui.MenuItem({ label: Path.basename(p), click: function() {
-  //     app.openProject(p);
-  //   }})
-  //   recentFilesMenu.append(m);
-  // });
 };

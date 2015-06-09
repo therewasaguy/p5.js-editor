@@ -1,7 +1,15 @@
+var Files = require('../../files');
+
+
 module.exports = {
 
   newProject: function() {
     // TO DO
+  },
+
+
+  launchExample: function(examplePath) {
+    //copy the empty project folder to a temporary directory
   },
 
   exportProject: function() {
@@ -14,6 +22,38 @@ module.exports = {
 
   run: function() {
     // TO DO
+    //save all files
+    // var self = this;
+    // this.saveAll();
+
+    // if (this.outputWindow) {
+    //   if (this.settings.runInBrowser) {
+    //     gui.Shell.openExternal(url);
+    //   } else {
+    //     this.outputWindow.reloadIgnoringCache();
+    //   }
+    // } else {
+    //   // gui.App.clearCache();
+    //   startServer(this.projectPath, this, function(url) {
+    //     if (self.settings.runInBrowser) {
+    //       gui.Shell.openExternal(url);
+    //     } else {
+    //       self.outputWindow = self.newWindow(url, {toolbar: true, 'inject-js-start': 'js/debug-console.js'});
+    //       self.outputWindow.on('document-start', function(){
+    //         self.outputWindow.show();
+    //       });
+    //       self.outputWindow.on("close", function(){
+    //         self.running = false;
+    //         self.outputWindow = null;
+    //         this.close(true);
+    //       });
+    //       self.outputWindow.on('focus', function(){
+    //         self.resetMenu();
+    //       });
+    //     }
+    //     self.running = true;
+    //   });
+    // }
   },
 
   stop: function() {
@@ -24,7 +64,7 @@ module.exports = {
 
   update: function(callback) {
     var pathPrefix = 'mode_assets/p5/empty_project/libraries/';
-    var urlPrefex = 'https://raw.githubusercontent.com/lmccart/p5.js/master/lib/';
+    var urlPrefex = 'https://raw.githubusercontent.com/processing/p5.js/master/lib/';
 
     var files = [
       { local: pathPrefix + 'p5.js', remote: urlPrefex + 'p5.js' },
@@ -35,18 +75,13 @@ module.exports = {
     var checked = 0;
 
     files.forEach(function(file) {
-      download(file.remote, file.local, function(data){
-        if (data) {
-          fs.writeFile(file.local, data, function(err){
-            if (err) throw err;
-          });
-        }
+        // TO DO
+        console.log('got a file');
         checked ++;
         if (checked == files.length && typeof callback !== 'undefined') {
           callback();
         }
       });
-    });
   },
 
   referenceURL: 'http://p5js.org/reference/'
@@ -57,69 +92,11 @@ var running = false;
 var url = '';
 
 function startServer(path, app, callback) {
-  if (running === false) {
-    var portscanner = nodeRequire('portscanner');
-    portscanner.findAPortNotInUse(3000, 4000, '127.0.0.1', function(error, port) {
-      var staticServer = nodeRequire('node-static');
-      var server = nodeRequire('http').createServer(handler);
-      var io = nodeRequire('socket.io')(server);
-      var file = new staticServer.Server(path);
-
-      server.listen(port, function(){
-        url = 'http://localhost:' + port;
-        callback(url);
-        running = true;
-      });
-
-      function handler(request, response) {
-        request.addListener('end', function () {
-          file.serve(request, response);
-        }).resume();
-      }
-
-      io.on('connection', function (socket) {
-        socket.on('console', function (data) {
-          app.debugOut(data.msg, data.num, data.type);
-        });
-      });
-    });
-
-
-  } else {
-    callback(url);
-  }
-
+  // Not needed
 }
 
 function download(url, local, cb) {
-  getLine(local, 0, function(line) {
-    var shouldUpdate = true;
-    var data = '';
-    var lines = [];
-    var request = nodeRequire('https').get(url, function(res) {
-      res.on('data', function(chunk) {
-        data += chunk;
-        lines = data.split('\n');
-        if (lines.length > 1 && line == lines[0]) {
-          shouldUpdate = false;
-          res.destroy();
-        }
-      });
-
-      res.on('end', function() {
-        if (shouldUpdate) {
-          cb(data);
-        } else {
-          cb(null);
-        }
-      })
-    });
-
-    request.on('error', function(e) {
-      console.log("Got error: " + e.message);
-      cb(null);
-    });
-  });
+  // TO DO
 }
 
 function getLine(filename, lineNo, callback) {
