@@ -1,5 +1,5 @@
 var Files = require('../../files');
-
+var sketchRunner = require('../../sketchrunner/p5jssandbox');
 
 module.exports = {
 
@@ -22,9 +22,13 @@ module.exports = {
 
   run: function() {
     // TO DO
+    var self = this;
+
     //save all files
-    // var self = this;
-    // this.saveAll();
+    self.saveAll();
+
+    var sketch = self.$.editor.ace.getValue();
+    sketchRunner.playCode(sketch);
 
     // if (this.outputWindow) {
     //   if (this.settings.runInBrowser) {

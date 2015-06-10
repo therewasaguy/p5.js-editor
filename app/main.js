@@ -21,7 +21,6 @@ var modes = {
   p5: require('./modes/p5/p5-mode')
 };
 
-
 var appConfig = {
 
   el: '#app',
@@ -388,6 +387,7 @@ var appConfig = {
 
 
 windowstate.load(function(createNewProject){
+
   if (createNewProject) {
     var app = new Vue(appConfig);
   } else {

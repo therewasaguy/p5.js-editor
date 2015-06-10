@@ -34,9 +34,9 @@ module.exports.setup = function(app) {
     //app.export();
   //});
 
-  Mousetrap.bind(['command+alt+j', 'ctrl+alt+j'], function(e) {
-    gui.Window.get().showDevTools();
-  });
+  // Mousetrap.bind(['command+alt+j', 'ctrl+alt+j'], function(e) {
+  //   gui.Window.get().showDevTools();
+  // });
 
   /*Mousetrap.bind(['command+=', 'ctrl+='], function(e) {
     app.changeFontSize(1);
